@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
-app = Flask(__name__)
-
+application = Flask(__name__)
+app=application
 ## import ridge regression model and standard scaler pickle file
 ridge_model = pickle.load(open('models/ridge.pkl','rb'))
 standard_scaler=pickle.load(open('models/scaler.pkl','rb'))
@@ -14,7 +14,8 @@ standard_scaler=pickle.load(open('models/scaler.pkl','rb'))
 ## Route for home page
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('home.html')
+
 
 @app.route('/predictdata',methods=['GET','POST'])
 def predict_datapoint():
@@ -32,11 +33,14 @@ def predict_datapoint():
         new_data_scaled=standard_scaler.transform([[Temperature,RH,Ws,Rain,FFMC,DMC,ISI,Classes,Region]])
         result=ridge_model.predict(new_data_scaled)
 
-        return render_template('index.html',result=result[0])
+        return render_template('result.html',result=result[0])
 
     else:
         return render_template('home.html')
-
+## Route for go back to home page for new prediction
+@app.route('/goback')
+def go_back():
+    return render_template('home.html')
 
 if __name__=="__main__":
-    app.run(host="0.0.0.0")  # jaha ye app run kar raha hai waha ka local host sey map kar leyta hai.
+    app.run(host="0.0.0.0") 
